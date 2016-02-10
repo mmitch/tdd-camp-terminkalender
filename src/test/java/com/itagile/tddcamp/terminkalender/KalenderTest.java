@@ -1,5 +1,6 @@
 package com.itagile.tddcamp.terminkalender;
 
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
@@ -8,11 +9,29 @@ public class KalenderTest {
 
 	private Kalender kalender = new Kalender();
 	private Termin termin = new Termin();
+	private final Teilnehmer teilnehmer;
 
-	// termin eintragen
+	public KalenderTest() {
+		teilnehmer = new Teilnehmer();
+		kalender.setBesitzer(teilnehmer);
+	}
 
-	// Besitzer in Termin eintragen
+	@Test
+	public void neuerTerminIstImKalender() {
+		kalender.trageEin(termin);
+		assertThat(kalender.termine, hasItem(termin));
+	}
 
+	@Test
+	public void besitzerDesKalendersIstTeilnehmerImTermin() {
+		kalender.trageEin(termin);
+		assertTrue(termin.nimmtTeil(teilnehmer));
+	}
 
-	// schmeisst Exception wenn Termin doppelt eingetragen wird
+	@Test(expected = TerminDoppeltEingetragenException.class)
+	public void verhindertDoppelteTermine() {
+		kalender.trageEin(termin);
+		kalender.trageEin(termin);
+	}
+
 }
