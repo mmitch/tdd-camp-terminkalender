@@ -2,8 +2,12 @@ package com.itagile.tddcamp.terminkalender;
 
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import org.junit.Test;
+import org.mockito.Mockito;
 
 public class KalenderTest {
 
@@ -34,4 +38,16 @@ public class KalenderTest {
 		kalender.trageEin(termin);
 	}
 
+	@Test
+	public void schreibeLogBeiTermineintrag() {
+		// given
+		Logger mockedLogger = mock(Logger.class);
+		kalender.setLogger(mockedLogger);
+
+		// when
+		kalender.trageEin(termin);
+
+		// then
+		verify(mockedLogger, times(1)).neuerTerminEingetragen(kalender, termin);
+	}
 }
