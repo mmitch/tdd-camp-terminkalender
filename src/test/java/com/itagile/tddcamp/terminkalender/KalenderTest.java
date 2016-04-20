@@ -1,13 +1,16 @@
 package com.itagile.tddcamp.terminkalender;
 
 import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import com.itagile.tddcamp.log.LogReporting;
 
@@ -58,15 +61,10 @@ public class KalenderTest {
 		// given
 		final String givenFehlermeldung = "Platte voll!";
 
-		Logger stubbedLogger = new Logger() {
-
-			@Override
-			public void neuerTerminEingetragen(Kalender kalender, Termin termin) {
-				throw new RuntimeException(givenFehlermeldung);
-			}
-
-		};
-		kalender.setLogger(stubbedLogger);
+		Logger mockedLogger = mock(Logger.class);
+		doThrow(new RuntimeException(givenFehlermeldung)) //
+				.when(mockedLogger).neuerTerminEingetragen(kalender, termin);
+		kalender.setLogger(mockedLogger);
 
 		LogReporting mockedReporting = mock(LogReporting.class);
 		kalender.setReporting(mockedReporting);
@@ -76,6 +74,6 @@ public class KalenderTest {
 
 		// then
 		verify(mockedReporting, times(1)) //
-				.loggerCouldNotLogEntry(stubbedLogger, givenFehlermeldung);
+				.loggerCouldNotLogEntry(mockedLogger, givenFehlermeldung);
 	}
 }
