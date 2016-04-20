@@ -4,12 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.itagile.tddcamp.log.FileLogger;
+import com.itagile.tddcamp.log.LogReporting;
+import com.itagile.tddcamp.log.WebserviceLogReporter;
 
 public class Kalender {
 
 	List<Termin> termine = new ArrayList<Termin>();
 	private Teilnehmer teilnehmer;
 	private Logger logger = new FileLogger();
+	private LogReporting reporting = new WebserviceLogReporter();
 
 	public void trageEin(Termin termin) {
 		if (hat(termin)) {
@@ -17,7 +20,11 @@ public class Kalender {
 		}
 		termin.ladeEin(teilnehmer);
 		termine.add(termin);
-		logger.neuerTerminEingetragen(this, termin);
+		try {
+			logger.neuerTerminEingetragen(this, termin);
+		} catch (RuntimeException e) {
+			reporting.loggerCouldNotLogEntry(logger, e.getMessage());
+		}
 	}
 
 	public boolean hat(Termin termin) {
@@ -30,5 +37,9 @@ public class Kalender {
 
 	void setLogger(Logger logger) {
 		this.logger = logger;
+	}
+
+	void setReporting(LogReporting reporting) {
+		this.reporting = reporting;
 	}
 }
