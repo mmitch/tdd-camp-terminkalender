@@ -56,11 +56,13 @@ public class KalenderTest {
 	@Test
 	public void reporteFehlerBeiLogSchreibung() {
 		// given
+		final String givenFehlermeldung = "Platte voll!";
+
 		Logger stubbedLogger = new Logger() {
 
 			@Override
 			public void neuerTerminEingetragen(Kalender kalender, Termin termin) {
-				throw new RuntimeException("Platte voll!");
+				throw new RuntimeException(givenFehlermeldung);
 			}
 
 		};
@@ -73,6 +75,7 @@ public class KalenderTest {
 		kalender.trageEin(termin);
 
 		// then
-		verify(mockedReporting, times(1)).loggerCouldNotLogEntry(stubbedLogger, "Platte voll!");
+		verify(mockedReporting, times(1)) //
+				.loggerCouldNotLogEntry(stubbedLogger, givenFehlermeldung);
 	}
 }
