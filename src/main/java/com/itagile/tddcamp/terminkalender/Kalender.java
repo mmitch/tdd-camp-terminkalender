@@ -12,7 +12,9 @@ public class Kalender {
 	private Logger logger = new FileLogger();
 
 	public void trageEin(Termin termin) {
-		if(hat(termin)) throw new TerminDoppeltEingetragenException();
+		if (hat(termin)) {
+			throw new TerminDoppeltEingetragenException();
+		}
 		termin.ladeEin(teilnehmer);
 		termine.add(termin);
 		logger.neuerTerminEingetragen(this, termin);
